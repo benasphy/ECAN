@@ -1,33 +1,92 @@
-# Economic Attention Networks (ECAN)
+# Project ECAN
 
-- This repository contains MeTTa code for [attention](https://github.com/singnet/attention) codebase port/re-implementation.
+## Overview
+This project includes significant improvements in modularity, error handling, and maintainability. The following files have been updated or newly introduced to enhance the system's functionality.
 
-## Introduction
+---
 
-- ECAN(Economic Attention Network) is a general term for the way that Attentional dynamics (centrally, the Competition for Attention) is carried out within OpenCogPrime.
+## Key Improvements
 
-- Each Atom has an Attention Value attached to it. The process of updating these values is carried out according to nonlinear dynamical equations that are derived based on "artificial economics," utilizing two separate "currencies," one for `Short Term Importance (STI)` and one for `Long Term Importance (LTI)`.
+### **Main Enhancements in `main.py`**
+✅ **Removed `sys.path.append`** → Now relies on proper module imports.
+✅ **Refactored Agent Registration into a Separate Function** → More modular and maintainable.
+✅ **Fixed Infinite Loop Issue** → Runs `scheduler.run_continuously()` only once.
+✅ **Better Exception Handling** → Uses `finally` to ensure cleanup.
+✅ **More Readable `agent_paths` Dictionary** → Improves maintainability.
 
-- One aspect of these equations is a form of `Hebbian Learning:` Atoms called `HebbianLinks` record which Atoms were habitually used together in the past, and when it occurred that Atom A's utilization appeared to play a role in causing Atom B's utilization. Then, these HebbianLinks are used to guide the flow of currency between Atoms: `B` gives `A` some money if `B` thinks that this money will help `A` to get used, and that this utilization will help `B` to get used.
+---
 
+### **Enhancements in `agent_base.py`**
+#### **Threading Concerns**
+- The `StreamMethod` class spawns a new thread for each method call but lacks proper thread management, which could lead to resource leaks.
+- There is no mechanism to stop or join the threads properly.
 
-- Very roughly speaking, these dynamical equations play a similar role to that played by `activation-spreading` in Neural Network AI systems.
+#### **Agent Object Initialization Issues**
+- The `_init_metta` method now properly handles cases where `_metta` is already initialized.
+- `_load_code` validates if `_metta` is correctly set before execution.
 
-## Running the Code
+#### **Error Handling**
+- The `run` method now catches unexpected cases where `_code` might not be properly set or loaded.
 
-- Make sure to install MeTTa `v0.2.1` following the instruction on the [hyperon-experimental](https://github.com/trueagi-io/hyperon-experimental) repository.
-- For windows users, an alternative way of running MeTTa can be using the [metta-run](https://github.com/iCog-Labs-Dev/metta-prebuilt-binary) binary.
+#### **Code Readability and Maintainability**
+- Reduced nested conditionals to improve readability.
+- Separated class responsibilities more clearly (agent management, execution, and threading).
 
+---
 
-## Contributing 
+### **Improvements in `ParallelScheduler.py`**
+✅ **Better Error Handling** – Wraps agent creation and execution in `try-except` blocks.
+✅ **Thread Management** – Uses a fixed number of worker threads for efficiency.
+✅ **Execution Monitoring** – Logs agent execution results and errors.
+✅ **Prevents Excessive CPU Usage** – Adds a short `time.sleep(1)` delay.
 
-Before you start contributing to this repository, make sure to read the [CONTRIBUTING.md](https://github.com/iCog-Labs-Dev/metta-attention/blob/main/.github/CONTRIBUTING.md) file from our repository
+---
 
-## References
+## **New Additions**
 
-- Original [paper](https://www.researchgate.net/publication/239925326_Economic_Attention_Networks_Associative_Memory_and_Resource_Allocation_for_General_Intelligence)
+### **`logger.py`**
+📌 **Purpose:** Create a logging utility to record system events and errors.
+- Logs system activities for better debugging.
+- Centralized logging management for easier maintenance.
 
-- [Economic attention allocation](https://wiki.opencog.org/w/Economic_attention_allocation_(Obsolete)) wiki page 
+### **`visualization.py`**
+📌 **Purpose:** Develop functions to plot attention data, facilitating the analysis of attention shifts and patterns.
+- Helps in visualizing agent behaviors over time.
+- Supports multiple graphing methods for better insights.
 
-- C++ implementation of [attention](https://github.com/singnet/attention) codebase
+### **`config.py`**
+📌 **Purpose:** Introduce a centralized configuration system to manage application settings.
+- Allows easy modifications to system-wide settings.
+- Reduces hardcoded values in the main code.
+
+---
+
+## **Installation & Usage**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/benasphy/ECAN.git
+   cd ECAN
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the main program:
+   ```bash
+   python main.py
+   ```
+
+---
+
+## **Contributions & Future Work**
+- Improve thread handling in `agent_base.py`.
+- Add more detailed logging and debugging tools.
+- Optimize scheduler performance for larger workloads.
+- Enhance visualization capabilities for better analytics.
+
+---
+
+🚀 **Happy Coding!**
 
